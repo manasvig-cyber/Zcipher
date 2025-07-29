@@ -65,18 +65,3 @@ Decryption functions can be added similarly.
 
 ✅ Requirements
 Python 3.x
-
-NumPy
-
-bash
-Copy
-Edit
-pip install numpy
-
-
-Copy
-Edit
-
----
-
-Let me know if you want the `cipher_algorithms.py` file content added here as well!
