@@ -1,0 +1,134 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+void caesarCipher(char* text, int shift) {
+    for (int i = 0; text[i] != '\0'; i++) {
+        if (isalpha(text[i])) {
+            char base = isupper(text[i]) ? 'A' : 'a';
+            text[i] = ((text[i] - base + shift) % 26) + base;
+        }
+    }
+    printf("Ciphertext: %s\n", text);
+}
+
+void hillCipherEncrypt(char* text) {
+    int matrix[2][2] = {{3, 3}, {2, 5}};
+    char output[100] = "";
+    int i, j;
+    int len = strlen(text);
+
+    for (i = 0; i < len; i++) {
+        text[i] = toupper(text[i]);
+    }
+    if (len % 2 != 0) {
+        strcat(text, "X");
+        len++;
+    }
+
+    for (i = 0; i < len; i += 2) {
+        int a = text[i] - 'A';
+        int b = text[i+1] - 'A';
+        output[i] = ((matrix[0][0] * a + matrix[0][1] * b) % 26) + 'A';
+        output[i+1] = ((matrix[1][0] * a + matrix[1][1] * b) % 26) + 'A';
+    }
+    output[len] = '\0';
+    printf("Ciphertext: %s\n", output);
+}
+
+void vigenereCipher(char* text, char* key) {
+    int textLen = strlen(text);
+    int keyLen = strlen(key);
+    char result[100];
+
+    for (int i = 0, j = 0; i < textLen; i++) {
+        if (isalpha(text[i])) {
+            char base = isupper(text[i]) ? 'A' : 'a';
+            int shift = toupper(key[j % keyLen]) - 'A';
+            result[i] = ((text[i] - base + shift) % 26) + base;
+            j++;
+        } else {
+            result[i] = text[i];
+        }
+    }
+    result[textLen] = '\0';
+    printf("Ciphertext: %s\n", result);
+}
+
+void monoalphabeticCipher(char* text, char* sub) {
+    char result[100];
+    for (int i = 0; text[i] != '\0'; i++) {
+        if (isalpha(text[i])) {
+            char upper = toupper(text[i]);
+            result[i] = sub[upper - 'A'];
+        } else {
+            result[i] = text[i];
+        }
+    }
+    result[strlen(text)] = '\0';
+    printf("Ciphertext: %s\n", result);
+}
+
+void menu() {
+    printf("\nSelect a Cipher:\n");
+    printf("1. Caesar Cipher\n");
+    printf("2. Hill Cipher\n");
+    printf("3. Vigenere Cipher\n");
+    printf("4. Monoalphabetic Cipher\n");
+    printf("5. Exit\n");
+}
+
+int main() {
+    int choice;
+    char text[100], key[100], sub[27];
+    int shift;
+
+    while (1) {
+        menu();
+        printf("Enter your choice (1-5): ");
+        scanf("%d", &choice);
+        getchar();
+
+        switch (choice) {
+            case 1:
+                printf("Enter plaintext: ");
+                fgets(text, 100, stdin);
+                text[strcspn(text, "\n")] = 0;
+                printf("Enter shift value: ");
+                scanf("%d", &shift);
+                getchar();
+                caesarCipher(text, shift);
+                break;
+            case 2:
+                printf("Enter plaintext: ");
+                fgets(text, 100, stdin);
+                text[strcspn(text, "\n")] = 0;
+                hillCipherEncrypt(text);
+                break;
+            case 3:
+                printf("Enter plaintext: ");
+                fgets(text, 100, stdin);
+                text[strcspn(text, "\n")] = 0;
+                printf("Enter keyword: ");
+                fgets(key, 100, stdin);
+                key[strcspn(key, "\n")] = 0;
+                vigenereCipher(text, key);
+                break;
+            case 4:
+                printf("Enter plaintext: ");
+                fgets(text, 100, stdin);
+                text[strcspn(text, "\n")] = 0;
+                printf("Enter substitution alphabet (26 uppercase letters): ");
+                fgets(sub, 27, stdin);
+                monoalphabeticCipher(text, sub);
+                break;
+            case 5:
+                exit(0);
+            default:
+                printf("Invalid option. Try again.\n");
+        }
+    }
+
+    return 0;
+}
